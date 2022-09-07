@@ -24,7 +24,7 @@ export default class Ingredient {
   get isEgg() {
     return this.name.toLowerCase().includes('egg')
   }
-  
+
   get isBacon() {
     return this.name.toLowerCase().includes('bacon')
   }

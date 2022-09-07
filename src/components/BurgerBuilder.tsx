@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./";
-import { delToken, getToken, isTokenValid, Token } from "../utils";
+import { delToken, getToken, isTokenValid } from "../utils";
 import { BUN_BTM_URL, BUN_TOP_URL, INGREDIENTS_URL } from "../contants";
 import { Ingredient } from "../models";
 
@@ -39,10 +39,16 @@ export function Burger({ ingredients, onRemove }: BurgerProps) {
       />
       <ul className="flex flex-col-reverse space-y-reverse -space-y-8 !sm:-space-y-16">
         {ingredients.map((ingredient, index) => (
-          <li key={ingredient.id} className="relative hover:cursor-pointer hover:scale-105 transition" onClick={() => onRemove(ingredient, index)}>
+          <li
+            key={ingredient.id}
+            className="relative hover:cursor-pointer hover:scale-105 transition"
+            onClick={() => onRemove(ingredient, index)}
+          >
             <img
               src={ingredient.url}
-              className={`w-full ${ingredient.isPatty ? "-my-4" : ''} ${ingredient.isBacon ? "my-2.5" : ''} ${ingredient.isEgg ? '-my-2': ''}`}
+              className={`w-full ${ingredient.isPatty ? "-my-4" : ""} ${
+                ingredient.isBacon ? "my-2.5" : ""
+              } ${ingredient.isEgg ? "-my-2" : ""}`}
             />
           </li>
         ))}
@@ -90,25 +96,35 @@ export function IngredientList({
 
 export default function BurgerBuilder() {
   const [addedIngredients, setAddedIngredients] = useState([] as Ingredient[]);
-  const [addedIngredientsCounters, setAddedIngredientsCounters] = useState({} as IngredientCounters);
-  const navigate = useNavigate()
-  const query = useQuery(['ingredients'], async () => {
-    const response = await fetch(INGREDIENTS_URL, { headers: { 'Authorization': 'Bearer ' + getToken().value }})
-    if (response.ok) return response.json()
-    throw new Error('Network response was not ok')
-  }, { enabled: false })
+  const [addedIngredientsCounters, setAddedIngredientsCounters] = useState(
+    {} as IngredientCounters
+  );
+  const navigate = useNavigate();
+  const query = useQuery(
+    ["ingredients"],
+    async () => {
+      const response = await fetch(INGREDIENTS_URL, {
+        headers: { Authorization: "Bearer " + getToken().value },
+      });
+      if (response.ok) return response.json();
+      throw new Error("Network response was not ok");
+    },
+    { enabled: false }
+  );
 
   useEffect(() => {
     const token = getToken();
     if (isTokenValid(token)) {
-      query.refetch()
+      query.refetch();
     } else {
-      delToken()
-      navigate('/login')
+      delToken();
+      navigate("/login");
     }
-  }, [])
+  }, []);
 
-  const ingredients = query.data ?  query.data.map((ingredient: any) => new Ingredient({ ...ingredient })) : []
+  const ingredients = query.data
+    ? query.data.map((ingredient: any) => new Ingredient({ ...ingredient }))
+    : [];
 
   function rebuild() {
     setAddedIngredients([]);
@@ -160,10 +176,11 @@ export default function BurgerBuilder() {
 
         {addedIngredients.length >=
         MIN_INGREDIENTS_TO_DISPLAY_REBUILD_BUTTON ? (
-          <Button onClick={rebuild} className="mt-10">Rebuild</Button>
+          <Button onClick={rebuild} className="mt-10">
+            Rebuild
+          </Button>
         ) : null}
       </div>
     </main>
   );
 }
-
