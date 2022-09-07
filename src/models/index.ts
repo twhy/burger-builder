@@ -1,0 +1,1 @@
+export { default as Ingredient, type IngredientAttributes } from './Ingredient'
